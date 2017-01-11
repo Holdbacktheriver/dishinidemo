@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="Keywords" content="Disney" />
+		<meta name="description" content="Disney" />
+		<title>Disney</title>
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/style.css"/>
+		<script src="__PUBLIC__/js/jquery-1.12.0.min.js"></script>
+	    <script src="__PUBLIC__/js/layout.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script src="__PUBLIC__/layer/layer.js"></script>-->
+
+	</head>
+	<body>
+
+
+		<div class="div-main">
+			
+		<header class="dis-header">
+					<a  class="fh" href="#"></a>
+					<h2 class="tit"><img src="__PUBLIC__/images/disney-img2.png"/></h2>
+				</header>
+				
+					
+					<div class="dis-content">
+						
+						<div class="dis-inp-tel">
+							<span>
+								<input type="tel" name="ftel" id="ftel" placeholder="请留下你的手机号码" value="" />
+							</span>
+							
+						</div>
+						
+						
+						<div class="dis-form-info bb bt bb1 bt1">
+							<span>
+								<img src="__PUBLIC__/images/disney-img3.png"/>
+							</span>
+							
+							<span>
+								<em>
+								<h3>上海迪士尼乐园门票</h3>
+
+									<foreach name="list" item="vo">
+										<input type="hidden" name="personnum" id="personnum" value="成人票{$personnum}张"/>
+										<p >{$vo.ticketname} <i>{$vo.num}</i>张</p>
+									</foreach>
+
+
+
+
+
+
+									<!--<if condition="($childnum gt 0) ">
+										<input type="hidden" name="childnum" id="childnum" value="儿童票{$childnum}张"/>
+										<p>*儿童票 <i>{$childnum}</i>张</p>
+									</if>-->
+
+								<!--<p>*儿童票 <i>1</i>张</p>-->
+								</em>
+							</span>
+						</div>
+
+
+						<div class="dis-form-inp bb">
+							<span>姓名</span>
+							<span><input type="text" name="name" id="name" value="" placeholder="请填写姓名" /></span>
+						</div>
+						<div class="dis-form-inp bb">
+							<span>号码</span>
+							<span><input type="text" name="idnumber" id="idnumber" value="" placeholder="请填写身份证号" /></span>
+						</div>
+						<div class="dis-form-inp bb">
+							<span>地址</span>
+							<span><input type="text" name="faddress" id="faddress" value="" placeholder="请填写地址" /></span>
+						</div>
+						<div class="dis-form-inp bb">
+							<span>日期</span>
+							<span><input type="text" name="fdate" id="fdate" value="{$date}" readonly="readonly"  /></span>
+						</div>
+						
+						<div class="dis-form-inp bb">
+							<span>数量</span>
+							<span><input type="text" name="ftknum" id="ftknum" value="{$num}张" readonly="readonly" /></span>
+						</div>
+						
+						<div class="dis-form-inp bb">
+							<span>邮费</span>
+							<span><input type="text" name="fsh" id="fsh" value="本产品不用送货" readonly="readonly" /></span>
+						</div>
+						
+						
+							
+					</div>
+					
+					
+					
+					<div class="dis-footer bar1 bar-footer1">
+					<div class="hj">
+						<p>合计：￥<i id="personprice">{$price}</i></p>
+					</div>
+					<div class="btn">
+						<a id="subform">确认付款</a>
+						<i class="loadingdiv"><img src="__PUBLIC__/images/load.gif"/></i>
+					</div>
+					
+				</div>
+			
+		</div>
+		<script src="__PUBLIC__/js/jquery-1.12.0.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function(){
+          $("#name,#idnumber,#faddress,#ftel").focus(function() {
+          	$(".dis-footer").hide();
+          });
+
+          $("#name,#idnumber,#faddress,#ftel").blur(function() {
+          	$(".dis-footer").show();
+          });
+
+				$("#subform").on("touchstart", function(){
+
+					var a=$("#ftel").val(),//手机
+					    b=$("#faddress").val(),//地址
+					    c=$("#fdate").val(),//日期
+					    d=$("#ftknum").val(),//数量
+					    e=$("#fsh").val();//备注
+					    s=$("#idnumber").val();//身份证号
+					    n=$("#name").val();//姓名
+					    f="<?php echo $price?>";//价格
+
+					    if(a==""||b==""||s==""||n==""){
+					    	alert("请填写信息");
+
+					    	return false;
+					    }else if(!a.match(/^(0|86|17951)?(13[0-9]|15[012356789]|17[0678]|18[0-9]|14[57])[0-9]{8}$/)){
+					    	alert("请填写正确手机号");
+					    	return false;
+					    }else if(!IdentityCodeValid(s)){
+					    	alert("请填写正确身份证号码");
+					    	return false;
+					    }else{
+					    	$.ajax({
+						type: "post",
+						cache: !1,
+						async: !1,
+						data: {
+							ftel: a,//手机
+							faddress: b,//地址
+							fdate: c,//日期
+							ftknum: d,//总数
+							fsh: e,//备注
+							price:f,//价格
+							idnumber:s,//身份证
+							name:n,//姓名
+							product:"<?php echo $ticketid ?>"
+
+						},
+						url: "<?php echo U('index/confirm')?>",
+						dataType: "json",
+						beforeSend: function() {
+							$(".loadingdiv").show()
+						},
+						success: function(data) {
+							if (data > 0) {
+								location.href = "http://<?php echo $_SERVER['HTTP_HOST']?>/dishini/pay/jsapi.php?id="+data;
+
+							}else if(data == -1){
+								alert('参数错误');
+
+							}
+							else {
+								alert('提交失败');
+
+							}
+						},
+						error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+							alert('网络异常');
+						}
+					})
+			     }
+				})
+			})
+
+        function IdentityCodeValid(code) {
+        var city = {11: "北京", 12: "天津", 13: "河北", 14: "山西", 15: "内蒙古", 21: "辽宁", 22: "吉林", 23: "黑龙江 ", 31: "上海", 32: "江苏", 33: "浙江", 34: "安徽", 35: "福建", 36: "江西", 37: "山东", 41: "河南", 42: "湖北 ", 43: "湖南", 44: "广东", 45: "广西", 46: "海南", 50: "重庆", 51: "四川", 52: "贵州", 53: "云南", 54: "西藏 ", 61: "陕西", 62: "甘肃", 63: "青海", 64: "宁夏", 65: "新疆", 71: "台湾", 81: "香港", 82: "澳门", 91: "国外 "};
+        var tip = "";
+        var pass = true;
+        if (!code || !/^[1-9]\d{5}((1[89]|20)\d{2})(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dx]$/i.test(code)) {
+            tip = "身份证号格式错误";
+            pass = false;
+        } else if (!city[code.substr(0, 2)]) {
+            tip = "地址编码错误";
+            pass = false;
+        } else {
+            //18位身份证需要验证最后一位校验位
+            if (code.length == 18) {
+                code = code.split('');
+                //∑(ai×Wi)(mod 11)
+                //加权因子
+                var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+                //校验位
+                var parity = [1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2];
+                var sum = 0;
+                var ai = 0;
+                var wi = 0;
+                for (var i = 0; i < 17; i++)
+                {
+                    ai = code[i];
+                    wi = factor[i];
+                    sum += ai * wi;
+                }
+                var last = parity[sum % 11];
+                if (parity[sum % 11] != code[17]) {
+                    tip = "校验位错误";
+                    pass = false;
+                }
+            }
+        }
+        return pass;
+    }
+			
+
+    
+		</script>
+	    
+		
+	</body>
+</html>

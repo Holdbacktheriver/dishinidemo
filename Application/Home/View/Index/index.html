@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="Keywords" content="Disney"/>
+    <meta name="description" content="Disney"/>
+    <title>Disney</title>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/style.css"/>
+    <script src="__PUBLIC__/js/jquery-1.12.0.min.js"></script>
+    <script src="__PUBLIC__/js/zepto.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <script src="__PUBLIC__/js/layout.js" type="text/javascript" charset="utf-8"></script>
+
+</head>
+<body>
+
+
+<div class="div-main">
+
+    <form action="" method="post">
+
+        <div class="page-group">
+
+            <div id="page-calendar" class="page">
+
+                <header class="bar1 bar-nav1 dis-header">
+                    <a class="fh" href="#"></a>
+                    <h2 class="tit"><img src="__PUBLIC__/images/disney-img2.png"/></h2>
+                </header>
+                <div class="bar1 bar-footer1 dis-footer">
+                    <div class="hj">
+
+                        <input type="hidden" name="totalprice" id="totalprice" value="{$ticketprice}"/>
+                        <p>合计：￥<i id="totalpricetxt">{$ticketprice}</i></p>
+                    </div>
+                    <div class="btn">
+                        <a id="subform">提交订单</a>
+                        <i class="loadingdiv"><img src="__PUBLIC__/images/load.gif"/></i>
+                    </div>
+
+                </div>
+
+                <div class="content native-scroll">
+
+                    <div class="dis-content">
+
+                        <div><img src="__PUBLIC__/images/disney-img1.jpg" width="100%"/></div>
+
+
+                        <div class="dis-sel-date">
+                            <h3>选择日期</h3>
+                            <div class="dis-sel-date1">
+                                <input type="text" class="inp1" readonly="readonly" name="" id="inpdate" value=""/>
+
+                                <input class="inp2" data-toggle='date' readonly="readonly" value="点击更换日期"/>
+
+                                <select class="sel3" name="selectdate" id="selectdate">
+                                </select>
+
+                            </div>
+                        </div>
+
+
+                        <div class="dis-sel-tknum">
+                            <h3>选择票数</h3>
+                            <div class="dis-sel-tknum1">
+                                <ul id="product">
+                                    <foreach name="list" item="vo">
+                                        <li>
+                                            <div class="dis-sel-tknum2 bb">
+                                                <span>{$vo.ticketname}</span>
+                                                <span>￥<i data-price="{$vo.ticketprice}">{$vo.ticketprice}</i></span>
+											<span>
+												<i class="plus"></i>
+
+												<input type="text" date-ticketid="{$vo.ticketid}" id="{$vo.ticketid}"
+                                                       name="personnum" class="number" value="1" readonly="readonly"/>
+												<i class="add"></i>
+											</span>
+                                            </div>
+                                        </li>
+                                    </foreach>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    //增加
+    function add(a, b, c) {
+        var d = $(a).prev().val();
+        $(a).prev().val(1 * d + 1), $(a).parent().prev().find("i").text(1 * $(a).prev().val() * c);
+        var e = 1 * $(a).prev().val() * c;
+        $("#totalpricetxt").html(1 * $(b).text() + e), $("#totalprice").val(1 * $(b).text() + e)
+    }
+
+    //减少
+    function plus(a, b, c) {
+        var d = $(a).next().val();
+        if ($(a).next().val(1 * d - 1), $(a).next().val() < 1) {
+            $(a).next().val(0), $(a).parent().prev().find("i").text(0);
+            var e = 1 * $(a).next().val() * c;
+            $("#totalpricetxt").html(1 * $(b).text() + e), $("#totalprice").val(1 * $(b).text() + e)
+        } else {
+            $(a).parent().prev().find("i").text(1 * $(a).next().val() * c);
+            var e = 1 * $(a).next().val() * c;
+            $("#totalpricetxt").html(1 * $(b).text() + e), $("#totalprice").val(1 * $(b).text() + e)
+        }
+    }
+    // padd.addEventListener("touchstart", function () {
+    //     add(this, '#childprice', 280)
+    // }, false);
+    // pplus.addEventListener("touchstart", function () {
+    //     plus(this, '#childprice', 280)
+    // }, false);
+    // cadd.addEventListener("touchstart", function () {
+    //     add(this, '#personprice', 120)
+    // }, false);
+    // cplus.addEventListener("touchstart", function () {
+    //     plus(this, '#personprice', 120)
+    // }, false);
+
+    $("html").on("touchstart", ".dis-sel-tknum2 .add", function () {
+        var a = $(this).parent().prev().find("i").attr("data-price"),
+                b = $(this).prev().val();
+                n = b*1+($(this).parent().parent().parent().siblings().find("input").val())*1;
+                if(n<5){
+                 $(this).prev().val(1 * b + 1);     
+                }else{
+                    alert("总票数不能超过五张")
+                }
+       $(this).parent().prev().find("i").text(1 * $(this).prev().val() * a);
+        var c = 1 * $(this).prev().val() * a,
+                d = $(this).parent().parent().parent().siblings().find("span").eq(1).find("i").text();
+        $("#totalpricetxt").html(1 * d + c), $("#totalprice").val(1 * d + c)
+    })
+    $("html").on("touchstart", ".dis-sel-tknum2 .plus", function () {
+        var a = $(this).parent().prev().find("i").attr("data-price"),
+                b = $(this).next().val(),
+                c = $(this).parent().parent().parent().siblings().find("span").eq(1).find("i").text();
+        if ($(this).next().val(1 * b - 1), $(this).next().val() < 1) {
+            $(this).next().val(0), $(this).parent().prev().find("i").text(0);
+            var d = 1 * $(this).next().val() * a;
+            $("#totalpricetxt").html(1 * c + d), $("#totalprice").val(1 * c + d)
+        } else {
+            $(this).parent().prev().find("i").text(1 * $(this).next().val() * a);
+            var d = 1 * $(this).next().val() * a;
+            $("#totalpricetxt").html(1 * c + d), $("#totalprice").val(1 * c + d)
+        }
+    });
+
+    $(function () {
+        var string = '<?php echo $date ?>';
+        var json_data = eval("(" + string + ")");
+        var hasticks_day = json_data.date;
+        for (var i = 0; i < hasticks_day.length; i++) {
+            temp = '<option value="' + hasticks_day[i] + '">' + hasticks_day[i] + '</option>';
+            $("#selectdate").append(temp);
+        }
+        var checkval = $("#selectdate").find("option:selected").val();
+        $("#inpdate").val(checkval);
+        $("#selectdate").change(function () {
+            var checkval1 = $("#selectdate").find("option:selected").val();
+            $("#inpdate").val(checkval1);
+
+            //查询当前日期下 可销售的票种
+
+        //加载层-默认风格
+            layer.load();
+
+            // 场次查询
+            $.ajax({
+
+                type: "get",
+                url: "<?php echo U('index/bydate') ?>",
+                data: {
+                    "date": checkval1
+                },
+                success: function (msg) {
+                    if (msg) {
+                        //销售的票种
+                        $.ajax({
+                            type: "get",
+                            url: "<?php echo U('index/ByScreening') ?>",
+                            data: {
+                                "scrid": msg
+                            },
+                            dataType: 'json',
+                            success: function (data) {
+                                //  alert(msg);
+                                if (data) {
+
+                                    //此处关闭
+                                    setTimeout(function(){
+                                        layer.closeAll('loading');
+                                    }, 0);
+                                    var html = "";
+                                    for (var i = 0; i < data.length; i++) {
+                                        html += '<li><div class="dis-sel-tknum2 bb"><span>' + data[i]["ticketname"] + '</span><span>￥<i  data-price ="' + data[i]["ticketprice"] + '">' + data[i]["ticketprice"] + '</i></span><span><i class="plus"></i><input type="text" date-ticketid="' + data[i]["ticketid"] + '" id="' + data[i]["ticketid"] + '" name="personnum" class="number" value="1" readonly="readonly"/><i class="add" ></i></span></div></li>';
+                                        $('#product').html(html)
+                                        console.log(data[i]['ticketname']);
+                                    }
+                                } else {
+                                    alert("没票可选");
+                                }
+                            }
+                        });
+
+                    } else {
+                        alert("操作成功");
+                    }
+                }
+            });
+
+        })
+
+
+        $("html").on("touchstart", "#subform", function () {
+            if ($("#selectdate").val() == "" || $("#totalprice").val() == 0) {
+                alert("请选择时间和票数");
+            } else {
+
+                var ticketid = "";
+                var ticket = "";
+                $('.number').each(function (i) {
+                    if ($(this).val() > 0) {
+                        ticket = $(this).attr("date-ticketid");
+                        if (i < 1) {
+                            ticketid = ticket + "_" + $('#' + ticket).val();
+                        } else {
+                            ticketid += "," + ticket + "_" + $('#' + ticket).val();
+                        }
+                    }
+                   // alert(ticketid);
+                })
+                var price = $("#totalpricetxt").text();
+                var date = $("#selectdate").val();
+                location.href = "<?php echo U('index/confirm')?>&ticketid= " + ticketid + "&price=" + price + "&date=" + date;
+
+            }
+
+        })
+    })
+
+
+</script>
+
+
+</body>
+</html>
